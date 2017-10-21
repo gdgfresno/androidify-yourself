@@ -1,4 +1,4 @@
-package com.github.androidify;
+package com.valleydevfest.androidify;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;

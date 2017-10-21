@@ -1,4 +1,4 @@
-package com.github.androidify;
+package com.valleydevfest.androidify;
 
 
 import java.util.ArrayList;

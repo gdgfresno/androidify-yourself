@@ -1,4 +1,4 @@
-package com.github.androidify;
+package com.valleydevfest.androidify;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
