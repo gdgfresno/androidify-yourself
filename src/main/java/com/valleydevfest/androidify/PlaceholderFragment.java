@@ -1,18 +1,31 @@
 package com.valleydevfest.androidify;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class PlaceholderFragment extends Fragment {
+
+    private static final String TAG = "PlaceholderFragment";
+    private DatabaseReference mFirebaseDatabaseReference;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
+    public static final String PARTICIPANT_CHILD = "participants";
+    private EditText mNameEditText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -28,29 +41,64 @@ public class PlaceholderFragment extends Fragment {
         viewPagerLegs.setAdapter(new AndroidifyViewPagerAdapter(fm, AndroidDrawables.getLegs()));
 
         initNameEdit(rootView);
-        initShareButton(rootView, viewPagerHead, viewPagerBody, viewPagerLegs);
+        initSubmitButton(rootView, viewPagerHead, viewPagerBody, viewPagerLegs);
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        Log.i(TAG, "FB User: " + mFirebaseAuth.getUid());
+
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
+        mFirebaseDatabaseReference.child(PARTICIPANT_CHILD).child(mFirebaseUser.getUid()).getRef()
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Avatar avatar = dataSnapshot.getValue(Avatar.class);
+                        Log.i(TAG, "Got Avatar");
+                        if (avatar != null) {
+                            Log.i(TAG, "Got Avatar2 " + avatar.name);
+                            mNameEditText.setText(avatar.name);
+                            viewPagerHead.setCurrentItem(avatar.head);
+                            viewPagerBody.setCurrentItem(avatar.body);
+                            viewPagerLegs.setCurrentItem(avatar.legs);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "loadAvatar:onCancelled", databaseError.toException());
+                    }
+                });
 
         return rootView;
     }
 
     private void initNameEdit(View rootView) {
-        rootView.findViewById(R.id.androidName);
+        mNameEditText = (EditText) rootView.findViewById(R.id.androidName);
     }
 
-    private void initShareButton(View rootView, final ViewPager viewPagerHead, final ViewPager viewPagerBody, final ViewPager viewPagerLegs) {
-        View shareButton = rootView.findViewById(R.id.button_share);
-        shareButton.setOnClickListener(new View.OnClickListener() {
+    private void initSubmitButton(View rootView, final ViewPager viewPagerHead, final ViewPager viewPagerBody, final ViewPager viewPagerLegs) {
+        View submitButton = rootView.findViewById(R.id.button_submit);
+        submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Integer head = AndroidDrawables.getHeads().get(viewPagerHead.getCurrentItem());
-                Integer body = AndroidDrawables.getBodies().get(viewPagerBody.getCurrentItem());
-                Integer legs = AndroidDrawables.getLegs().get(viewPagerLegs.getCurrentItem());
+                Avatar avatar = new Avatar(
+                        mNameEditText.getText().toString(),
+                        viewPagerHead.getCurrentItem(),
+                        viewPagerBody.getCurrentItem(),
+                        viewPagerLegs.getCurrentItem());
 
-                Bitmap bitmap = BitmapUtils.combineDrawables(getResources(), head, body, legs);
-
-                String imagePath = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "Android Avatar", null);
-                Uri imageURI = Uri.parse(imagePath);
-                startShareActivity(imageURI);
+                mFirebaseDatabaseReference.child(PARTICIPANT_CHILD).child(mFirebaseUser.getUid())
+                        .setValue(avatar, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError,
+                                                   DatabaseReference databaseReference) {
+                                if (databaseError != null) {
+                                    Log.w(TAG, "Unable to write to database.",
+                                            databaseError.toException());
+                                }
+                            }
+                        });
             }
         });
     }
@@ -58,15 +106,5 @@ public class PlaceholderFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-    }
-
-    private void startShareActivity(Uri imageURI) {
-        final Intent shareIntent = new Intent(Intent.ACTION_SEND);
-
-        shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, imageURI);
-        shareIntent.setType("image/png");
-
-        startActivity(shareIntent);
     }
 }
