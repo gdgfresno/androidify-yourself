@@ -156,8 +156,7 @@ public class PlaceholderFragment extends Fragment {
                         android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
                 if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(
-                            getActivity(),
+                    requestPermissions(
                             new String[] { android.Manifest.permission.WRITE_EXTERNAL_STORAGE },
                             WRITE_EXTERNAL_STORAGE);
                 } else {
