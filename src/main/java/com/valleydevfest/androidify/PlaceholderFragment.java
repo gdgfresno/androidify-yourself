@@ -1,10 +1,16 @@
 package com.valleydevfest.androidify;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,23 +35,29 @@ public class PlaceholderFragment extends Fragment {
     private FirebaseUser mFirebaseUser;
     public static final String PARTICIPANT_CHILD = "participants";
     private EditText mNameEditText;
+    private ViewPager mViewPagerHead;
+    private ViewPager mViewPagerBody;
+    private ViewPager mViewPagerLegs;
+
+    private static final int WRITE_EXTERNAL_STORAGE = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        final ViewPager viewPagerHead = (ViewPager) rootView.findViewById(R.id.viewPagerHead);
-        final ViewPager viewPagerBody = (ViewPager) rootView.findViewById(R.id.viewPagerBody);
-        final ViewPager viewPagerLegs = (ViewPager) rootView.findViewById(R.id.viewPagerLegs);
+        mViewPagerHead = rootView.findViewById(R.id.viewPagerHead);
+        mViewPagerBody = rootView.findViewById(R.id.viewPagerBody);
+        mViewPagerLegs = rootView.findViewById(R.id.viewPagerLegs);
 
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        viewPagerHead.setAdapter(new AndroidifyViewPagerAdapter(fm, AndroidDrawables.getHeads()));
-        viewPagerBody.setAdapter(new AndroidifyViewPagerAdapter(fm, AndroidDrawables.getBodies()));
-        viewPagerLegs.setAdapter(new AndroidifyViewPagerAdapter(fm, AndroidDrawables.getLegs()));
+        mViewPagerHead.setAdapter(new AndroidifyViewPagerAdapter(fm, AndroidDrawables.getHeads()));
+        mViewPagerBody.setAdapter(new AndroidifyViewPagerAdapter(fm, AndroidDrawables.getBodies()));
+        mViewPagerLegs.setAdapter(new AndroidifyViewPagerAdapter(fm, AndroidDrawables.getLegs()));
 
         initNameEdit(rootView);
-        initSubmitButtons(rootView, viewPagerHead, viewPagerBody, viewPagerLegs);
+        initSubmitButtons(rootView);
         initWebsiteButton(rootView);
+        initShareButton(rootView);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
@@ -62,9 +74,9 @@ public class PlaceholderFragment extends Fragment {
                         if (avatar != null) {
                             Log.i(TAG, "Got Avatar2 " + avatar.name);
                             mNameEditText.setText(avatar.name);
-                            viewPagerHead.setCurrentItem(avatar.head - 1);
-                            viewPagerBody.setCurrentItem(avatar.body - 1);
-                            viewPagerLegs.setCurrentItem(avatar.legs - 1);
+                            mViewPagerHead.setCurrentItem(avatar.head - 1);
+                            mViewPagerBody.setCurrentItem(avatar.body - 1);
+                            mViewPagerLegs.setCurrentItem(avatar.legs - 1);
                         }
                     }
 
@@ -81,12 +93,12 @@ public class PlaceholderFragment extends Fragment {
         mNameEditText = (EditText) rootView.findViewById(R.id.androidName);
     }
 
-    private void submitAvatar(final ViewPager viewPagerHead, final ViewPager viewPagerBody, final ViewPager viewPagerLegs) {
+    private void submitAvatar() {
         Avatar avatar = new Avatar(
                 mNameEditText.getText().toString(),
-                viewPagerHead.getCurrentItem() + 1,
-                viewPagerBody.getCurrentItem() + 1,
-                viewPagerLegs.getCurrentItem() + 1);
+                mViewPagerHead.getCurrentItem() + 1,
+                mViewPagerBody.getCurrentItem() + 1,
+                mViewPagerLegs.getCurrentItem() + 1);
 
         mFirebaseDatabaseReference.child(PARTICIPANT_CHILD).child(mFirebaseUser.getUid())
                 .setValue(avatar, new DatabaseReference.CompletionListener() {
@@ -105,12 +117,12 @@ public class PlaceholderFragment extends Fragment {
                 });
     }
 
-    private void initSubmitButtons(View rootView, final ViewPager viewPagerHead, final ViewPager viewPagerBody, final ViewPager viewPagerLegs) {
+    private void initSubmitButtons(View rootView) {
         View submitButton = rootView.findViewById(R.id.button_submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                submitAvatar(viewPagerHead, viewPagerBody, viewPagerLegs);
+                submitAvatar();
             }
         });
 
@@ -118,13 +130,13 @@ public class PlaceholderFragment extends Fragment {
         submitButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                submitAvatar(viewPagerHead, viewPagerBody, viewPagerLegs);
+                submitAvatar();
             }
         });
     }
 
     private void initWebsiteButton(View rootView) {
-        View wbesiteButton = rootView.findViewById(R.id.wbesite);
+        View wbesiteButton = rootView.findViewById(R.id.button_wbesite);
         wbesiteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,6 +145,65 @@ public class PlaceholderFragment extends Fragment {
                 startActivity(launchBrowser);
             }
         });
+    }
+
+    private void initShareButton(View rootView) {
+        View shareButton = rootView.findViewById(R.id.button_share);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int permissionCheck = ContextCompat.checkSelfPermission(getActivity(),
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+                if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                            getActivity(),
+                            new String[] { android.Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                            WRITE_EXTERNAL_STORAGE);
+                } else {
+                    share();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+
+            case WRITE_EXTERNAL_STORAGE:
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    share();
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void share() {
+        Integer head = AndroidDrawables.getHeads().get(mViewPagerHead.getCurrentItem());
+        Integer body = AndroidDrawables.getBodies().get(mViewPagerBody.getCurrentItem());
+        Integer legs = AndroidDrawables.getLegs().get(mViewPagerLegs.getCurrentItem());
+
+        Bitmap bitmap = BitmapUtils.combineDrawables(getResources(), head, body, legs);
+
+        String imagePath = MediaStore.Images.Media.insertImage(
+                getActivity().getContentResolver(), bitmap,
+                getResources().getString(R.string.android_avatar), null);
+        Uri imageURI = Uri.parse(imagePath);
+        startShareActivity(imageURI);
+    }
+
+    private void startShareActivity(Uri imageURI) {
+        final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+
+        shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imageURI);
+        shareIntent.setType("image/png");
+
+        startActivity(shareIntent);
     }
 
     @Override

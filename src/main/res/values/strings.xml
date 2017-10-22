@@ -8,7 +8,9 @@
     <string name="sign_out">Sign Out</string>
     <string name="figure_saved">Figure Saved!</string>
     <string name="website_url">https://valleydevfest.com/</string>
-    <string name="save">Save</string>
-    <string name="back_to_website">Back to the website</string>
+    <string name="submit">Submit to website</string>
+    <string name="back_to_website">Visit website</string>
+    <string name="share">Save / Share</string>
+    <string name="android_avatar">Android Avatar</string>
 
 </resources>
