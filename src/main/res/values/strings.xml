@@ -2,9 +2,13 @@
 <resources>
 
     <string name="app_name">Valley DevFest 2017</string>
-    <string name="action_settings">Settings</string>
-    <string name="create_your_android">Create your Android</string>
+    <string name="action_website">Website</string>
+    <string name="create_your_android">Androidify Valley DevFest!</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_out">Sign Out</string>
+    <string name="figure_saved">Figure Saved!</string>
+    <string name="website_url">https://valleydevfest.com/</string>
+    <string name="save">Save</string>
+    <string name="back_to_website">Back to the website</string>
 
 </resources>

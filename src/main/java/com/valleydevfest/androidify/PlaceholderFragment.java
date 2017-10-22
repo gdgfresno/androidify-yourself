@@ -1,5 +1,7 @@
 package com.valleydevfest.androidify;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,7 +44,8 @@ public class PlaceholderFragment extends Fragment {
         viewPagerLegs.setAdapter(new AndroidifyViewPagerAdapter(fm, AndroidDrawables.getLegs()));
 
         initNameEdit(rootView);
-        initSubmitButton(rootView, viewPagerHead, viewPagerBody, viewPagerLegs);
+        initSubmitButtons(rootView, viewPagerHead, viewPagerBody, viewPagerLegs);
+        initWebsiteButton(rootView);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
@@ -77,28 +81,56 @@ public class PlaceholderFragment extends Fragment {
         mNameEditText = (EditText) rootView.findViewById(R.id.androidName);
     }
 
-    private void initSubmitButton(View rootView, final ViewPager viewPagerHead, final ViewPager viewPagerBody, final ViewPager viewPagerLegs) {
+    private void submitAvatar(final ViewPager viewPagerHead, final ViewPager viewPagerBody, final ViewPager viewPagerLegs) {
+        Avatar avatar = new Avatar(
+                mNameEditText.getText().toString(),
+                viewPagerHead.getCurrentItem() + 1,
+                viewPagerBody.getCurrentItem() + 1,
+                viewPagerLegs.getCurrentItem() + 1);
+
+        mFirebaseDatabaseReference.child(PARTICIPANT_CHILD).child(mFirebaseUser.getUid())
+                .setValue(avatar, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError,
+                                           DatabaseReference databaseReference) {
+                        if (databaseError != null) {
+                            Log.w(TAG, "Unable to write to database.",
+                                    databaseError.toException());
+                        } else {
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    getResources().getString(R.string.figure_saved),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void initSubmitButtons(View rootView, final ViewPager viewPagerHead, final ViewPager viewPagerBody, final ViewPager viewPagerLegs) {
         View submitButton = rootView.findViewById(R.id.button_submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Avatar avatar = new Avatar(
-                        mNameEditText.getText().toString(),
-                        viewPagerHead.getCurrentItem() + 1,
-                        viewPagerBody.getCurrentItem() + 1,
-                        viewPagerLegs.getCurrentItem() + 1);
+                submitAvatar(viewPagerHead, viewPagerBody, viewPagerLegs);
+            }
+        });
 
-                mFirebaseDatabaseReference.child(PARTICIPANT_CHILD).child(mFirebaseUser.getUid())
-                        .setValue(avatar, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError,
-                                                   DatabaseReference databaseReference) {
-                                if (databaseError != null) {
-                                    Log.w(TAG, "Unable to write to database.",
-                                            databaseError.toException());
-                                }
-                            }
-                        });
+        View submitButton2 = rootView.findViewById(R.id.button_submit2);
+        submitButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                submitAvatar(viewPagerHead, viewPagerBody, viewPagerLegs);
+            }
+        });
+    }
+
+    private void initWebsiteButton(View rootView) {
+        View wbesiteButton = rootView.findViewById(R.id.wbesite);
+        wbesiteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uriUrl = Uri.parse(getResources().getString(R.string.website_url));
+                Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+                startActivity(launchBrowser);
             }
         });
     }
