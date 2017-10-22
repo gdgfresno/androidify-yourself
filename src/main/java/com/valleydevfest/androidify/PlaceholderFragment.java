@@ -58,9 +58,9 @@ public class PlaceholderFragment extends Fragment {
                         if (avatar != null) {
                             Log.i(TAG, "Got Avatar2 " + avatar.name);
                             mNameEditText.setText(avatar.name);
-                            viewPagerHead.setCurrentItem(avatar.head);
-                            viewPagerBody.setCurrentItem(avatar.body);
-                            viewPagerLegs.setCurrentItem(avatar.legs);
+                            viewPagerHead.setCurrentItem(avatar.head - 1);
+                            viewPagerBody.setCurrentItem(avatar.body - 1);
+                            viewPagerLegs.setCurrentItem(avatar.legs - 1);
                         }
                     }
 
@@ -84,9 +84,9 @@ public class PlaceholderFragment extends Fragment {
             public void onClick(View view) {
                 Avatar avatar = new Avatar(
                         mNameEditText.getText().toString(),
-                        viewPagerHead.getCurrentItem(),
-                        viewPagerBody.getCurrentItem(),
-                        viewPagerLegs.getCurrentItem());
+                        viewPagerHead.getCurrentItem() + 1,
+                        viewPagerBody.getCurrentItem() + 1,
+                        viewPagerLegs.getCurrentItem() + 1);
 
                 mFirebaseDatabaseReference.child(PARTICIPANT_CHILD).child(mFirebaseUser.getUid())
                         .setValue(avatar, new DatabaseReference.CompletionListener() {
