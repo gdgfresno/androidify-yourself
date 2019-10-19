@@ -1,31 +1,36 @@
-# Binary files
-*.class
-*.dex
-
-# Packages
-*.jar
-!*gradle-wrapper.jar
+#built application files
 *.apk
 *.ap_
 
-# Generated files
-local.properties
+# files for the dex VM
+*.dex
 
-# Generated folders
-out/
+# Java class files
+*.class
+
+# generated files
 bin/
 gen/
-target/
-build/
-.gradle/
-gen-external-apklibs/
 
-# Project files
-.idea/
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Windows thumbnail db
+Thumbs.db
+
+# OSX files
+.DS_Store
+
+# Android Studio
 *.iml
-.project
-.classpath
+.idea
+#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
+.gradle
+build/
+.navigation
+captures/
+output.json
 
-# Misc
-*.DS_Store
-*.swp
+#NDK
+obj/
+.externalNativeBuild
