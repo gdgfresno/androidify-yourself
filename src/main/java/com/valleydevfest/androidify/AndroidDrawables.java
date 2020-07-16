@@ -1,6 +1,5 @@
 package com.valleydevfest.androidify;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

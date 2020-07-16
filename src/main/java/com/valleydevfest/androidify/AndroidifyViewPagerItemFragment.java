@@ -1,12 +1,12 @@
 package com.valleydevfest.androidify;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.fragment.app.Fragment;
 
 public class AndroidifyViewPagerItemFragment extends Fragment {
 
@@ -21,7 +21,7 @@ public class AndroidifyViewPagerItemFragment extends Fragment {
         }
 
         View rootView = inflater.inflate(R.layout.androidify_part, container, false);
-        ImageView imageView = (ImageView) rootView.findViewById(R.id.android_part);
+        ImageView imageView = rootView.findViewById(R.id.android_part);
         imageView.setImageResource(imgId);
         return rootView;
     }

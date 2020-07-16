@@ -6,18 +6,18 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,11 +27,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 public class PlaceholderFragment extends Fragment {
 
     private static final String TAG = "PlaceholderFragment";
     private DatabaseReference mFirebaseDatabaseReference;
-    private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
     public static final String PARTICIPANT_CHILD = "participants";
     private EditText mNameEditText;
@@ -59,7 +60,7 @@ public class PlaceholderFragment extends Fragment {
         initWebsiteButton(rootView);
         initShareButton(rootView);
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         Log.i(TAG, "FB User: " + mFirebaseAuth.getUid());
 
@@ -68,7 +69,7 @@ public class PlaceholderFragment extends Fragment {
         mFirebaseDatabaseReference.child(PARTICIPANT_CHILD).child(mFirebaseUser.getUid()).getRef()
                 .addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Avatar avatar = dataSnapshot.getValue(Avatar.class);
                         Log.i(TAG, "Got Avatar");
                         if (avatar != null) {
@@ -81,7 +82,7 @@ public class PlaceholderFragment extends Fragment {
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
                         Log.w(TAG, "loadAvatar:onCancelled", databaseError.toException());
                     }
                 });
@@ -104,7 +105,7 @@ public class PlaceholderFragment extends Fragment {
                 .setValue(avatar, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError databaseError,
-                                           DatabaseReference databaseReference) {
+                                           @NonNull DatabaseReference databaseReference) {
                         if (databaseError != null) {
                             Log.w(TAG, "Unable to write to database.",
                                     databaseError.toException());
@@ -152,7 +153,7 @@ public class PlaceholderFragment extends Fragment {
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int permissionCheck = ContextCompat.checkSelfPermission(getActivity(),
+                int permissionCheck = ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()),
                         android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
                 if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
@@ -189,7 +190,7 @@ public class PlaceholderFragment extends Fragment {
         Bitmap bitmap = BitmapUtils.combineDrawables(getResources(), head, body, legs);
 
         String imagePath = MediaStore.Images.Media.insertImage(
-                getActivity().getContentResolver(), bitmap,
+                Objects.requireNonNull(getActivity()).getContentResolver(), bitmap,
                 getResources().getString(R.string.android_avatar), null);
         Uri imageURI = Uri.parse(imagePath);
         startShareActivity(imageURI);
