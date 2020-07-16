@@ -1,6 +1,8 @@
 ## Androidify Yourself app for GDG event
 ![screenshot](https://raw.githubusercontent.com/gdgriga/androidify-yourself/master/androidify-yourself-screenshot.png)
 
+[Click here for this particular app's companion conference website to see your submitted avatar](https://vdf2017-3a9f6.firebaseapp.com/participants/)
+
 #### Slides
 https://speakerdeck.com/larchaon/androidify-yourself
 
