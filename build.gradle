@@ -6,8 +6,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'com.google.gms:google-services:3.1.1'
+        classpath 'com.android.tools.build:gradle:4.0.1'
+        classpath 'com.google.gms:google-services:4.3.3'
     }
 }
 
@@ -21,14 +21,13 @@ repositories {
 }
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion 29
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 26
-        versionCode 5
-        versionName "1.0.4"
+        targetSdkVersion 29
+        versionCode 6
+        versionName "1.1"
     }
 
     buildTypes {
@@ -37,18 +36,22 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:26.1+'
-    compile 'com.google.firebase:firebase-core:11.4.2'
-    compile 'com.google.firebase:firebase-auth:11.4.2'
-    compile 'com.google.firebase:firebase-database:11.4.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.firebase:firebase-core:17.4.4'
+    implementation 'com.google.firebase:firebase-auth:19.3.2'
+    implementation 'com.google.firebase:firebase-database:19.3.1'
 
     // Google
-    compile "com.google.android.gms:play-services-base:11.4.2"
-    compile "com.google.android.gms:play-services-gcm:11.4.2"
-    compile 'com.google.android.gms:play-services-auth:11.4.2'
+    implementation 'com.google.android.gms:play-services-base:17.3.0'
+    implementation 'com.google.android.gms:play-services-gcm:17.0.0'
+    implementation 'com.google.android.gms:play-services-auth:18.0.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
