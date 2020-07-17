@@ -6,18 +6,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
-public class MainActivity extends AppCompatActivity implements
-        GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity {
 
     public static final String ANONYMOUS = "anonymous";
 
@@ -47,11 +42,11 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
 
-        // FragmentActivity, OnConnectionFailedListener
-        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this) // FragmentActivity, OnConnectionFailedListener
-                .addApi(Auth.GOOGLE_SIGN_IN_API)
-                .build();
+//        // FragmentActivity, OnConnectionFailedListener
+//        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .enableAutoManage(this, this) // FragmentActivity, OnConnectionFailedListener
+//                .addApi(Auth.GOOGLE_SIGN_IN_API)
+//                .build();
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -76,10 +71,5 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 }
