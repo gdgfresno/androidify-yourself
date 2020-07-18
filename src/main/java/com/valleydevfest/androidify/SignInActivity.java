@@ -54,13 +54,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sign_in_button:
-                signIn();
-                break;
-            default:
-                return;
-        }
+        if (v.getId() == R.id.sign_in_button)
+            signIn();
     }
 
     private void signIn() {
@@ -90,22 +85,19 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mFirebaseAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+            .addOnCompleteListener(this, task -> {
+                Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
 
-                    // If sign in fails, display a message to the user. If sign in succeeds
-                    // the auth state listener will be notified and logic to handle the
-                    // signed in user can be handled in the listener.
-                    if (!task.isSuccessful()) {
-                        Log.w(TAG, "signInWithCredential", task.getException());
-                        Toast.makeText(SignInActivity.this, "Authentication failed.",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        startActivity(new Intent(SignInActivity.this, MainActivity.class));
-                        finish();
-                    }
+                // If sign in fails, display a message to the user. If sign in succeeds
+                // the auth state listener will be notified and logic to handle the
+                // signed in user can be handled in the listener.
+                if (!task.isSuccessful()) {
+                    Log.w(TAG, "signInWithCredential", task.getException());
+                    Toast.makeText(SignInActivity.this, "Authentication failed.",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                    finish();
                 }
             });
     }
