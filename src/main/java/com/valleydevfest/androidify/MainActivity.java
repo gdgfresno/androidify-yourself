@@ -23,8 +23,6 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
-        String mUsername = ANONYMOUS;
-
         // Initialize Firebase Auth
         // Firebase instance variables
         FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
@@ -35,18 +33,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, SignInActivity.class));
             finish();
             return;
-        } else {
-            mUsername = mFirebaseUser.getDisplayName();
-            if (mFirebaseUser.getPhotoUrl() != null) {
-                String mPhotoUrl = mFirebaseUser.getPhotoUrl().toString();
-            }
         }
-
-//        // FragmentActivity, OnConnectionFailedListener
-//        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .enableAutoManage(this, this) // FragmentActivity, OnConnectionFailedListener
-//                .addApi(Auth.GOOGLE_SIGN_IN_API)
-//                .build();
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
