@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 public class AndroidifyViewPagerItemFragment extends Fragment {
@@ -15,7 +16,7 @@ public class AndroidifyViewPagerItemFragment extends Fragment {
     private int imgId;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             imgId = savedInstanceState.getInt(IMG_ID);
         }
