@@ -1,5 +1,6 @@
 package com.valleydevfest.androidify;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -129,7 +130,13 @@ public class PlaceholderFragment extends Fragment {
         websiteButton.setOnClickListener(view -> {
             Uri uriUrl = Uri.parse(getResources().getString(R.string.website_url));
             Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
-            startActivity(launchBrowser);
+            try {
+                startActivity(launchBrowser);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.no_browser),
+                        Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

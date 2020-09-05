@@ -10,6 +10,7 @@
     <string name="website_url">https://vdf2017-3a9f6.firebaseapp.com/participants/</string>
     <string name="submit">Submit to website</string>
     <string name="back_to_website">Visit website</string>
+    <string name="no_browser">Could not open browser</string>
     <string name="share">Save / Share</string>
     <string name="android_avatar">Android Avatar</string>
 
