@@ -109,7 +109,7 @@ public class PlaceholderFragment extends Fragment {
                     Log.w(TAG, "Unable to write to database.",
                             databaseError.toException());
                 } else {
-                    Toast.makeText(getActivity().getApplicationContext(),
+                    Toast.makeText(getActivity(),
                             getResources().getString(R.string.figure_saved),
                             Toast.LENGTH_SHORT).show();
                 }
