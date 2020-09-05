@@ -125,8 +125,8 @@ public class PlaceholderFragment extends Fragment {
     }
 
     private void initWebsiteButton(View rootView) {
-        View wbesiteButton = rootView.findViewById(R.id.button_wbesite);
-        wbesiteButton.setOnClickListener(view -> {
+        View websiteButton = rootView.findViewById(R.id.button_website);
+        websiteButton.setOnClickListener(view -> {
             Uri uriUrl = Uri.parse(getResources().getString(R.string.website_url));
             Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
             startActivity(launchBrowser);
