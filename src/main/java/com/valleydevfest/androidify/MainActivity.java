@@ -3,6 +3,7 @@ package com.valleydevfest.androidify;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -14,12 +15,18 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getSupportActionBar().hide();
+        try {
+            getSupportActionBar().hide();
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Exception while trying to hide SupportActionBar", e);
+        }
 
         // Initialize Firebase Auth
         // Firebase instance variables
