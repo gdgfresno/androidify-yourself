@@ -7,7 +7,6 @@
     <string name="sign_in">Sign In</string>
     <string name="sign_out">Sign Out</string>
     <string name="figure_saved">Figure Saved!</string>
-    <string name="website_url">https://vdf2017-3a9f6.firebaseapp.com/participants/</string>
     <string name="submit">Submit to website</string>
     <string name="back_to_website">Visit website</string>
     <string name="no_browser">Could not open browser</string>

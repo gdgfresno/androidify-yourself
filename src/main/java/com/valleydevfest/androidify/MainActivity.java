@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String WEBSITE_URL = "https://vdf2017-3a9f6.firebaseapp.com/participants/";
     private static final String TAG = "MainActivity";
 
     @Override
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_website) {
-            Uri uriUrl = Uri.parse(getResources().getString(R.string.website_url));
+            Uri uriUrl = Uri.parse(WEBSITE_URL);
             Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
             startActivity(launchBrowser);
             return true;
