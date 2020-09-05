@@ -9,8 +9,9 @@
     <string name="figure_saved">Figure Saved!</string>
     <string name="submit">Submit to website</string>
     <string name="back_to_website">Visit website</string>
-    <string name="no_browser">Could not open browser</string>
+    <string name="no_browser">So sorry, could not open browser</string>
     <string name="share">Save / Share</string>
+    <string name="could_not_save">So sorry, could not save image</string>
     <string name="android_avatar">Android Avatar</string>
 
 </resources>

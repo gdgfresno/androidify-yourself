@@ -176,8 +176,14 @@ public class PlaceholderFragment extends Fragment {
             requireActivity().getContentResolver(), bitmap,
             getResources().getString(R.string.android_avatar), null
         );
-        Uri imageURI = Uri.parse(imagePath);
-        startShareActivity(imageURI);
+        if (imagePath == null) {
+            Toast.makeText(getActivity(),
+                    getResources().getString(R.string.could_not_save),
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            Uri imageURI = Uri.parse(imagePath);
+            startShareActivity(imageURI);
+        }
     }
 
     private void startShareActivity(Uri imageURI) {
